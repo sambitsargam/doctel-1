@@ -1,0 +1,60 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+.row-header {
+  margin: 0px auto;
+  padding: 0px auto;
+}
+
+.row-content {
+  margin: 0px auto;
+  padding: 50px 0px 50px 0px;
+  border-bottom: 1px ridge;
+  min-height: 400px;
+}
+
+.footer {
+  background-color: #d1c4e9;
+  margin: 0px auto;
+  padding: 20px 0px 0px 0px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+.jumbotron {
+  padding: 70px 30px 70px 30px;
+  margin: 0px auto;
+  background: #9575cd;
+  color: floralwhite;
+}
+
+address {
+  font-size: 80%;
+  margin: 0px;
+  color: #0f0f0f;
+}
+
+.navbar-dark {
+  background-color: #000000;
+}

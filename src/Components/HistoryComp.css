@@ -1,0 +1,161 @@
+.body_style {
+  padding-right: 2%;
+}
+
+.details {
+  box-sizing: border-box;
+  text-align: left;
+  padding: 12%;
+  padding-top: 5%;
+  margin-bottom: 2%;
+}
+
+.eventbox {
+  border: 2px solid rgb(102, 102, 102);
+  width: 100%;
+  padding-top: 8%;
+  background-color: rgba(143, 143, 143, 0.123);
+}
+
+.eventrow {
+  padding: 0% 6% 5% 9%;
+}
+
+.plotimage {
+  width: 80%;
+  margin: 0% 8% 0% 8%;
+}
+
+.column1 {
+  font-weight: bold;
+}
+
+.column2 {
+  font-size: 14px;
+}
+
+hr {
+  clear: both;
+}
+
+@media screen and (min-width: 480px) {
+  .events {
+    display: inline-block;
+    float: left;
+    width: 45%;
+    margin-left: 5%;
+  }
+  .eventbox {
+    padding-left: 2%;
+    padding-right: 2%;
+    /* margin-right: 2%; */
+  }
+  .eventrow {
+    margin-bottom: 120%;
+    padding-left: 5%;
+  }
+  .column1 {
+    width: 40%;
+  }
+  .column2 {
+    width: 60%;
+  }
+  .column1,
+  .column2 {
+    display: inline-block;
+    float: left;
+    line-height: 30px;
+  }
+  .details {
+    margin-bottom: 25%;
+  }
+}
+
+@media screen and (min-width: 637px) {
+  .eventbox {
+    padding-top: 7%;
+  }
+  .eventrow {
+    margin-bottom: 40%;
+    /* padding-left: 8%; */
+  }
+  .column1,
+  .column2 {
+    width: 50%;
+  }
+  .details {
+    margin-bottom: 20%;
+  }
+}
+
+@media screen and (min-width: 770px) {
+  .events {
+    width: 31%;
+    margin-left: 2%;
+  }
+  .eventrow {
+    margin-left: 0%;
+    margin-bottom: 30%;
+  }
+  .plotimage {
+    width: 45%;
+    padding-top: 1%;
+    margin-left: 5%;
+    margin-right: 2%;
+  }
+  .plotimage,
+  .details {
+    display: inline-block;
+    float: left;
+  }
+  .details {
+    width: 45%;
+    padding: 0% 0% 0% 4%;
+    margin-bottom: 5%;
+  }
+  .column1 {
+    width: 35%;
+  }
+  .column2 {
+    width: 65%;
+  }
+  .column1,
+  .column2 {
+    line-height: 40px;
+  }
+}
+
+@media screen and (min-width: 1042px) {
+  .events {
+    width: 23%;
+  }
+  .eventbox {
+    padding-top: 10%;
+  }
+  .eventrow {
+    margin-bottom: 33%;
+  }
+  .plotimage {
+    width: 40%;
+    margin-left: 10%;
+  }
+  .details {
+    width: 45%;
+    margin-top: 3%;
+    margin-bottom: 7%;
+  }
+  .column2 {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .events {
+    width: 22%;
+  }
+  .eventrow {
+    margin-left: 4%;
+    margin-right: 2%;
+    margin-bottom: 27%;
+  }
+}

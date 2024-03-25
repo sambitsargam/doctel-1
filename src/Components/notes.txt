@@ -1,0 +1,3 @@
+weight in grams patComp
+height in cms patComp
+dob in unix timestamp of that date patComp
