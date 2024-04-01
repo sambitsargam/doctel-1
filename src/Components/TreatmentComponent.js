@@ -62,7 +62,7 @@ class TreatmentComp extends Component {
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': 'Basic Y2hhcmFucmFqdTpGS0NZbTdnQmllSmtZRTp3R2RHYTFxYW01OUU3bDVZaDJZejdCNXlHb2Ix'
+        'Authorization': 'Bearer RkRDOEFBRDdFMTczRTQ2RkU4NDQ6M2pRN0xnTEl2aDNJY05TT3BHYW9WVVpWUUdUSDFEamxUOW9JeDNXbTpjaGFyYW5yYWp1'
       }
     };
   
@@ -87,15 +87,14 @@ class TreatmentComp extends Component {
   captureFile = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    const reader = new FileReader();
+    const reader = new window.FileReader();
     reader.readAsArrayBuffer(file);
     reader.onloadend = () => {
-      const buffer = Buffer.from(reader.result);
-      this.setState({ buffer }); // Update the state with the buffer
-      console.log("Buffer", buffer);
+      this.setState({ buffer: Buffer(reader.result) });
+      console.log("buffer", this.state.buffer);
     };
   };
-  
+
 
   async handleSubmitadd(event) {
     console.log("Current State" + JSON.stringify(this.state));
