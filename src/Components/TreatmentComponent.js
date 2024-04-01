@@ -87,14 +87,15 @@ class TreatmentComp extends Component {
   captureFile = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    const reader = new window.FileReader();
+    const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onloadend = () => {
-      this.setState({ buffer: Buffer(reader.result) });
-      console.log("buffer", this.state.buffer);
+      const buffer = Buffer.from(reader.result);
+      this.setState({ buffer }); // Update the state with the buffer
+      console.log("Buffer", buffer);
     };
   };
-
+  
 
   async handleSubmitadd(event) {
     console.log("Current State" + JSON.stringify(this.state));
