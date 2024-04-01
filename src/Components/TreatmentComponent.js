@@ -11,7 +11,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import "../App.css";
-import { Web3Storage } from 'web3.storage/dist/bundle.esm.min'
+import axios from 'axios';
 
 class TreatmentComp extends Component {
   constructor(props) {
@@ -39,12 +39,6 @@ class TreatmentComp extends Component {
     this.captureFile = this.captureFile.bind(this);
   }
 
-  // Initialize Web3.Storage client
-  getWeb3StorageClient() {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDEwMjdFNzE2MDdmNzkzQTNmRjVDODIzZTAwQzcyQ2RERDcxODYwRUQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjUxOTk2ODQwNDIsIm5hbWUiOiJmZWRtbC10ZXN0In0.UejyT2d3N9wCD1cNqOei77rgn8Q7or3jTj7ucBAsBtQ';
-    return new Web3Storage({ token });
-  }
-
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -54,29 +48,41 @@ class TreatmentComp extends Component {
     });
   }
 
+
   uploadImage = async (x) => {
-    console.log("Starting file upload to Web3.Storage");
+    console.log("Starting file upload to Filebase");
     if (!this.state.buffer) {
       console.error("Buffer is empty, cannot upload file.");
       return;
     }
+  
+    const formData = new FormData();
+    formData.append('file', this.state.buffer);
+  
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Basic Y2hhcmFucmFqdTpGS0NZbTdnQmllSmtZRTp3R2RHYTFxYW01OUU3bDVZaDJZejdCNXlHb2Ix'
+      }
+    };
+  
     try {
-      const client = this.getWeb3StorageClient();
-      const file = new File([this.state.buffer], "patient-file", { type: "application/octet-stream" });
-      const cid = await client.put([file], { wrapWithDirectory: false });
-      console.log(`File uploaded to Web3.Storage with CID: ${cid}`);
-
+      const response = await axios.post('https://api.filebase.io/v1/ipfs', formData, config);
+      console.log("File uploaded to Filebase with CID:", response.data.cid);
+      
+      // Perform actions based on x
       if (x === 1) {
-        // Example function call, replace with your actual function call
-        console.log(`Prescription CID: ${cid}`);
+        console.log(`Prescription CID: ${response.data.cid}`);
+        // Example: Call function to add prescription to contract
       } else if (x === 2) {
-        // Example function call, replace with your actual function call
-        console.log(`Report CID: ${cid}`);
+        console.log(`Report CID: ${response.data.cid}`);
+        // Example: Call function to add report to contract
       }
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   };
+  
 
   captureFile = (event) => {
     event.preventDefault();
