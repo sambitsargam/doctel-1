@@ -11,13 +11,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import "../App.css";
-import { render } from "react-dom";
-const ipfsClient = require("ipfs-http-client");
-const ipfs = ipfsClient.create({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-});
+import { Web3Storage } from 'web3.storage';
 
 class TreatmentComp extends Component {
   constructor(props) {
@@ -45,52 +39,43 @@ class TreatmentComp extends Component {
     this.captureFile = this.captureFile.bind(this);
   }
 
+  // Initialize Web3.Storage client
+  getWeb3StorageClient() {
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDEwMjdFNzE2MDdmNzkzQTNmRjVDODIzZTAwQzcyQ2RERDcxODYwRUQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjUxOTk2ODQwNDIsIm5hbWUiOiJmZWRtbC10ZXN0In0.UejyT2d3N9wCD1cNqOei77rgn8Q7or3jTj7ucBAsBtQ';
+    return new Web3Storage({ token });
+  }
+
   handleInputChange(event) {
     const target = event.target;
-    const value = target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
     this.setState({
       [name]: value,
     });
   }
 
-  uploadImage = (x) => {
-    console.log("Time start file to ipfs", Date.now());
-    console.log("Submitting file to ipfs...");
-    //adding file to the IPFS
-    //console.log(this.state.buffer);
-    ipfs
-      .add(this.state.buffer, (error, result) => {
-        console.log("Ipfs result", result);
-        if (error) {
-          console.log("error");
-          console.error(error);
-          return;
-        }
-        console.log("complete");
-        this.setState({ loading: true });
-      })
-      .then((response) => {
-        console.log(response.path);
-        if (x == 1) {
-          const res = this.props.contract.methods
-            .addPrescriptionTreat(this.state.treatId, response.path)
-            .send({ from: this.props.accounts, gas: 1000000 })
-            .on("transactionHash", (hash) => {
-              this.setState({ loading: false });
-              console.log("Time end trans ended", Date.now());
-            });
-        } else if (x == 2) {
-          const res = this.props.contract.methods
-            .addReportTreat(this.state.treatId, response.path)
-            .send({ from: this.props.accounts, gas: 1000000 })
-            .on("transactionHash", (hash) => {
-              this.setState({ loading: false });
-              console.log("Time end trans ended", Date.now());
-            });
-        }
-      });
-    console.log("Time end file uploaded", Date.now());
+  uploadImage = async (x) => {
+    console.log("Starting file upload to Web3.Storage");
+    if (!this.state.buffer) {
+      console.error("Buffer is empty, cannot upload file.");
+      return;
+    }
+    try {
+      const client = this.getWeb3StorageClient();
+      const file = new File([this.state.buffer], "patient-file", { type: "application/octet-stream" });
+      const cid = await client.put([file], { wrapWithDirectory: false });
+      console.log(`File uploaded to Web3.Storage with CID: ${cid}`);
+
+      if (x === 1) {
+        // Example function call, replace with your actual function call
+        console.log(`Prescription CID: ${cid}`);
+      } else if (x === 2) {
+        // Example function call, replace with your actual function call
+        console.log(`Report CID: ${cid}`);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
   captureFile = (event) => {
@@ -103,6 +88,8 @@ class TreatmentComp extends Component {
       console.log("buffer", this.state.buffer);
     };
   };
+
+
   async handleSubmitadd(event) {
     console.log("Current State" + JSON.stringify(this.state));
     event.preventDefault();
