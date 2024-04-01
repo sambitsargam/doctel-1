@@ -11,7 +11,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import "../App.css";
-import { Web3Storage } from 'web3.storage';
+import { Web3Storage } from 'web3.storage/dist/bundle.esm.min'
 
 class TreatmentComp extends Component {
   constructor(props) {
