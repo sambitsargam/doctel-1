@@ -11,30 +11,22 @@ function AllEventrender({ treatEv }) {
     return time;
   };
 
-  const getImageFromLocalStorage = (key) => {
-    const data = localStorage.getItem(key);
-    if (data) {
-      const { buffer } = JSON.parse(data);
-      return URL.createObjectURL(new Blob([buffer]));
-    }
-    return null;
-  };
 
   return (
     <div className="eventbox">
       {treatEv?.event === "PrescriptionAddedTreat" ||
       treatEv?.event === "ReportAddedTreat" ? (
         <a
-          href={getImageFromLocalStorage(
+          href={
             treatEv?.returnValues.report || treatEv?.returnValues.prescription
-          )}
+          }
           target="_blank"
         >
           <img
             style={{ maxWidth: "90%" }}
-            src={getImageFromLocalStorage(
+            src={
               treatEv?.returnValues.report || treatEv?.returnValues.prescription
-            )}
+            }
             alt="Prescription or Report"
           />
         </a>
