@@ -12,6 +12,23 @@ import {
 } from "reactstrap";
 import "../App.css";
 import { render } from "react-dom";
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAGfxfDVYO6nmw9pMdDnp6HwxkaVJ1d3PQ",
+  authDomain: "charanraju-c0b23.firebaseapp.com",
+  projectId: "charanraju-c0b23",
+  storageBucket: "charanraju-c0b23.appspot.com",
+  messagingSenderId: "368508969483",
+  appId: "1:368508969483:web:7243448e0f701c12a59d0e"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Get a reference to the storage service, which is used to create references in your storage bucket
+const storage = getStorage(app);
 
 class TreatmentComp extends Component {
   constructor(props) {
@@ -49,37 +66,47 @@ class TreatmentComp extends Component {
   }
 
 uploadImage = (x) => {
-  console.log("Time start file to local storage", Date.now());
-  const data = {
-    buffer: this.state.buffer,
-    timestamp: Date.now()
-  };
-  localStorage.setItem(`image_${x}`, JSON.stringify(data));
-  console.log("Image saved to local storage");
+  console.log("Time start file to Firebase Storage", Date.now());
+  
+  // Reference to the root of the Firebase Storage bucket
+  const storageRef = ref(storage, `images/${Date.now()}_${x}`);
 
-  if (x === 1) {
-    // Handle prescription upload
-    const prescriptionPath = `image_${x}`;
-    this.props.contract.methods
-      .addPrescriptionTreat(this.state.treatId, prescriptionPath)
-      .send({ from: this.props.accounts, gas: 1000000 })
-      .on("transactionHash", (hash) => {
-        this.setState({ loading: false });
-        console.log("Time end trans ended", Date.now());
-      });
-  } else if (x === 2) {
-    // Handle report upload
-    const reportPath = `image_${x}`;
-    this.props.contract.methods
-      .addReportTreat(this.state.treatId, reportPath)
-      .send({ from: this.props.accounts, gas: 1000000 })
-      .on("transactionHash", (hash) => {
-        this.setState({ loading: false });
-        console.log("Time end trans ended", Date.now());
-      });
-  }
+  // Upload the file
+  uploadBytesResumable(storageRef, this.state.buffer).then((snapshot) => {
+    console.log("File uploaded to Firebase Storage");
+    
+    // Get the download URL
+    getDownloadURL(snapshot.ref).then((downloadURL) => {
+      console.log("File available at", downloadURL);
+      
+      // Now you can update your contract with the downloadURL
+      if (x === 1) {
+        // Handle prescription upload
+        const prescriptionPath = downloadURL;
+        this.props.contract.methods
+          .addPrescriptionTreat(this.state.treatId, prescriptionPath)
+          .send({ from: this.props.accounts, gas: 1000000 })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+            console.log("Time end trans ended", Date.now());
+          });
+      } else if (x === 2) {
+        // Handle report upload
+        const reportPath = downloadURL;
+        this.props.contract.methods
+          .addReportTreat(this.state.treatId, reportPath)
+          .send({ from: this.props.accounts, gas: 1000000 })
+          .on("transactionHash", (hash) => {
+            this.setState({ loading: false });
+            console.log("Time end trans ended", Date.now());
+          });
+      }
+    });
+  }).catch((error) => {
+    console.error("Error uploading file to Firebase Storage", error);
+  });
 
-  console.log("Time end file saved to local storage", Date.now());
+  console.log("Time end file uploaded to Firebase Storage", Date.now());
 };
 
   captureFile = (event) => {
