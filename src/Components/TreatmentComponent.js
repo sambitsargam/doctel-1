@@ -11,7 +11,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import "../App.css";
-import axios from 'axios';
+import { render } from "react-dom";
 
 class TreatmentComp extends Component {
   constructor(props) {
@@ -41,48 +41,30 @@ class TreatmentComp extends Component {
 
   handleInputChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.value;
     const name = target.name;
     this.setState({
       [name]: value,
     });
   }
 
-
-  uploadImage = async (x) => {
-    console.log("Starting file upload to Filebase");
-    if (!this.state.buffer) {
-      console.error("Buffer is empty, cannot upload file.");
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append('file', this.state.buffer);
-  
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer RkRDOEFBRDdFMTczRTQ2RkU4NDQ6M2pRN0xnTEl2aDNJY05TT3BHYW9WVVpWUUdUSDFEamxUOW9JeDNXbTpjaGFyYW5yYWp1'
-      }
+  uploadImage = (x) => {
+    console.log("Time start file to local storage", Date.now());
+    const data = {
+      buffer: this.state.buffer,
+      timestamp: Date.now()
     };
-  
-    try {
-      const response = await axios.post('https://api.filebase.io/v1/ipfs', formData, config);
-      console.log("File uploaded to Filebase with CID:", response.data.cid);
-      
-      // Perform actions based on x
-      if (x === 1) {
-        console.log(`Prescription CID: ${response.data.cid}`);
-        // Example: Call function to add prescription to contract
-      } else if (x === 2) {
-        console.log(`Report CID: ${response.data.cid}`);
-        // Example: Call function to add report to contract
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
+    localStorage.setItem(`file_${x}`, JSON.stringify(data));
+    console.log("File saved to local storage");
+
+    if (x === 1) {
+      // Handle prescription upload
+    } else if (x === 2) {
+      // Handle report upload
     }
+
+    console.log("Time end file saved to local storage", Date.now());
   };
-  
 
   captureFile = (event) => {
     event.preventDefault();
@@ -94,8 +76,6 @@ class TreatmentComp extends Component {
       console.log("buffer", this.state.buffer);
     };
   };
-
-
   async handleSubmitadd(event) {
     console.log("Current State" + JSON.stringify(this.state));
     event.preventDefault();
@@ -125,7 +105,7 @@ class TreatmentComp extends Component {
   async handleSubmitmod(event) {
     event.preventDefault();
     var patientstate = 0;
-    if (this.state.patstate == "Recovered") {
+    if (this.state.patstate === "Recovered") {
       patientstate = 1;
     } else {
       patientstate = 2;
@@ -153,7 +133,7 @@ class TreatmentComp extends Component {
             <Label htmlFor="patAadhar" md={2}>
               Patient Aadhar
             </Label>
-            <Col md={10}>
+            <Col md={5}>
               <Input
                 type="number"
                 id="patAadhar"
@@ -165,12 +145,12 @@ class TreatmentComp extends Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Col md={{ size: 8 }}>
+            <Col md={{ size: 9 }}>
               <Button type="submit" color="primary">
                 Add Treatment
               </Button>
             </Col>
-            <Col md={{ size: 2 }}>
+            <Col md={{ size: 1 }}>
               <Button color="success">{this.state.treatcount}</Button>
             </Col>
           </FormGroup>
@@ -183,7 +163,7 @@ class TreatmentComp extends Component {
             <Label htmlFor="treatId" md={2}>
               Treatment Id
             </Label>
-            <Col md={10}>
+            <Col md={5}>
               <Input
                 type="number"
                 id="treatId"
@@ -198,7 +178,7 @@ class TreatmentComp extends Component {
             <Label htmlFor="docAadhar" md={2}>
               Doctor Aadhar
             </Label>
-            <Col md={10}>
+            <Col md={5}>
               <Input
                 type="number"
                 id="docAadhar"
@@ -210,7 +190,7 @@ class TreatmentComp extends Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Col md={{ size: 8, offset: 2 }}>
+            <Col md={{ size: 5, offset: 2 }}>
               <Button type="submit" color="primary">
                 Send Treatment
               </Button>
@@ -225,7 +205,7 @@ class TreatmentComp extends Component {
             <Label htmlFor="treatId" md={2}>
               Treatment Id
             </Label>
-            <Col md={10}>
+            <Col md={5}>
               <Input
                 type="number"
                 id="treatId"
@@ -237,7 +217,7 @@ class TreatmentComp extends Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label htmlFor="prescriptionUpload" className="ml-3">
+            <Label htmlFor="prescriptionUpload" className="mx-auto" >
               Prescription Upload
             </Label>
             <Input
@@ -265,7 +245,7 @@ class TreatmentComp extends Component {
             <Label htmlFor="treatId" md={2}>
               Treatment Id
             </Label>
-            <Col md={10}>
+            <Col md={5}>
               <Input
                 type="number"
                 id="treatId"
