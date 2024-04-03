@@ -48,23 +48,39 @@ class TreatmentComp extends Component {
     });
   }
 
-  uploadImage = (x) => {
-    console.log("Time start file to local storage", Date.now());
-    const data = {
-      buffer: this.state.buffer,
-      timestamp: Date.now()
-    };
-    localStorage.setItem(`file_${x}`, JSON.stringify(data));
-    console.log("File saved to local storage");
-
-    if (x === 1) {
-      // Handle prescription upload
-    } else if (x === 2) {
-      // Handle report upload
-    }
-
-    console.log("Time end file saved to local storage", Date.now());
+uploadImage = (x) => {
+  console.log("Time start file to local storage", Date.now());
+  const data = {
+    buffer: this.state.buffer,
+    timestamp: Date.now()
   };
+  localStorage.setItem(`image_${x}`, JSON.stringify(data));
+  console.log("Image saved to local storage");
+
+  if (x === 1) {
+    // Handle prescription upload
+    const prescriptionPath = `image_${x}`;
+    this.props.contract.methods
+      .addPrescriptionTreat(this.state.treatId, prescriptionPath)
+      .send({ from: this.props.accounts, gas: 1000000 })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+        console.log("Time end trans ended", Date.now());
+      });
+  } else if (x === 2) {
+    // Handle report upload
+    const reportPath = `image_${x}`;
+    this.props.contract.methods
+      .addReportTreat(this.state.treatId, reportPath)
+      .send({ from: this.props.accounts, gas: 1000000 })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+        console.log("Time end trans ended", Date.now());
+      });
+  }
+
+  console.log("Time end file saved to local storage", Date.now());
+};
 
   captureFile = (event) => {
     event.preventDefault();
