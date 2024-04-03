@@ -1,10 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import moment from "moment";
 import "./HistoryComp.css";
 
-const ETHER = 1000000000000000000;
-
-function AllEventrender({ treatEv, contract, accounts }) {
+function AllEventrender({ treatEv }) {
   const getTimeFormat = (timeCreated) => {
     let day = moment.unix(timeCreated);
     let xy = timeCreated;
@@ -33,10 +31,11 @@ function AllEventrender({ treatEv, contract, accounts }) {
           target="_blank"
         >
           <img
-            style={{ "max-width": "90%" }}
+            style={{ maxWidth: "90%" }}
             src={getImageFromLocalStorage(
               treatEv?.returnValues.report || treatEv?.returnValues.prescription
             )}
+            alt="Prescription or Report"
           />
         </a>
       ) : null}
